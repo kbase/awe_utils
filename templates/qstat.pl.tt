@@ -1,0 +1,8 @@
+
+
+$AWE_SERVER_API="[% awe_host %]:[% awe_api_port %]";
+
+print "using awe server $AWE_SERVER_API";
+
+exec "awe_qstat", "-awe=$AWE_SERVER_API";
+
