@@ -1,0 +1,3 @@
+$AWE_SERVER_API="[% awe_host %]:[% awe_api_port %]";
+
+print `curl $AWE_SERVER_API/clients | python -mjson.tool`;
