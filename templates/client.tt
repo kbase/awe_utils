@@ -1,0 +1,7 @@
+$AWE_SERVER_API="[% awe_host %]:[% awe_api_port %]";
+
+my $id = shift;
+$id = $ENV{AWE_CLIENT} if $ENV{AWE_CLIENT} && !$id;
+
+print `curl $AWE_SERVER_API/client/$id | python -mjson.tool`;
+

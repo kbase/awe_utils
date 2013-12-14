@@ -1,0 +1,21 @@
+$AWE_SERVER_API="[% awe_host %]:[% awe_api_port %]";
+$SHOCK_SERVER_API="[% shock_host %]:[% shock_api_port %]";
+
+print "\nWARNING! THIS WILL DELETE ALL JOBS FROM THE AWE SERVER AT $AWE_SERVER_API\n";
+print "\nAre you sure you want to continue (Y/n)?  ";
+
+$answer = <STDIN>;
+chomp $answer;
+unless ( $answer eq 'Y' ) {
+	print "\nExiting now, no jobs deleted.\n";
+	exit;
+}
+
+$ids = `curl $AWE_SERVER_API/jobs | python -mjson.tool | grep \\"id\\" | cut -f4 -d\\"`;
+
+foreach my $id (split /\n/, $ids) {
+	$c= "curl -X DELETE $AWE_SERVER_API/job/$id";
+	system($c);
+	print "\n";
+}
+

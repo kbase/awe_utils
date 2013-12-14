@@ -1,0 +1,9 @@
+$AWE_SERVER_API="[% awe_host %]:[% awe_api_port %]";
+$SHOCK_SERVER_API="[% shock_host %]:[% shock_api_port %]";
+
+
+my $id = shift;
+$id = $ENV{AWE_JOB} if $ENV{AWE_JOB} && !$id;
+
+print `curl -s $AWE_SERVER_API/job/$id | python -mjson.tool`;
+
