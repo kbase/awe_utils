@@ -1,27 +1,71 @@
-#!/bin/sh
 
-AWE_SERVER_API=[% awe_host %]:[% awe_api_port %]
-SHOCK_SERVER_API=[% shock_host %]:[% shock_api_port %]
+use Getopt::Long;
+use Pod::Usage;
+use vars qw($help $dest $input );
+
+$AWE_SERVER_API="[% awe_host %]:[% awe_api_port %]";
+$SHOCK_SERVER_API="[% shock_host %]:[% shock_api_port %]";
+
+use vars qw($help $input $pipeline $name $project $totalwork);
+GetOptions('h'    => \$help,
+           'help' => \$help,
+	   'input=s'     => \$input,
+	   'pipeline=s'  => \$pipeline,
+	   'name=s'      => \$name,
+	   'project=s'   => \$project,
+	   'totalwork=s' => \$totalwork,
+	   'shock=s'     => \$shock,
+	   'awe=s'       => \$awe,
+    ) or pod2usage(0);
+
+pod2usage(-exitstatus => 0,
+          -output => \*STDOUT,
+          -verbose => 2,
+          -noperldoc => 1,
+    ) if (defined $help or (!$pipeline or !input));
+
+$awe   = $AWE_SERVER_API unless $awe;
+$shock = $SHOCK_SERVER_API unless $shock;
+$name     = "test" unless $name;
+$project  = "kb"   unless $project;
+$totalwork = 4     unless $totalwork;
+
+#exec "awe_submit", "-awe", "$awe", "-shock", "$shock", "-upload",  "$input",  "-pipeline", "$pipeline",  "-name",  "$name", "-project", "$project", "-totalwork", "4";
 
 
+=pod
 
-if test -z "$1" ; then
-  echo "usage: test.sh <workflow_file> <sequence_file>"
-  exit
-else
-  echo "using workflow file $1."
-fi
+=head1  NAME
 
-if test -z "$2" ; then
-  echo "usage: test.sh <workflow_file> <sequence_file>"
-  exit
-else
-  echo "using workflow file $1"
-  echo "using sequence file $2"
-  echo "using shock server $SHOCK_SERVER_API"
-  echo "using awe server $AWE_SERVER_API"
-fi
+awe-submit
 
-awe_submit -awe $AWE_SERVER_API -shock $SHOCK_SERVER_API -upload $2 -pipeline $1 -name mgrast_prodtest_1 -project nihs_test -to
-talwork 4
+=head1  SYNOPSIS
 
+=over
+
+=item awe-submit -input <infile> -pipeline <pipeline.template>
+
+=back
+
+=head1  DESCRIPTION
+
+The awe-submit command submits a workflow to the awe server. It uses a template to construct the workflow.
+
+=head1  COMMAND-LINE OPTIONS
+
+=over
+
+=item -h, --help  This documentation
+
+=item -input       The name of the input file (required)
+      -pipeline    The name of the workflow template (required)
+      -name        The name of the workflow (default = test)
+      -project     The name of the project (default = kb)
+      -totalwork   The total workers (default = 4)
+      -shock       The shock api. This is set at compile time, over ride with this option.
+      -awe         THe awe server api. Set at compile time, override with this option.
+
+
+=back
+
+=cut
